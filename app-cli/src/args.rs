@@ -8,21 +8,18 @@ pub struct Commands {
 }
 
 #[derive(Subcommand, Debug)]
-pub enum Subcommands {
-    #[command(about = "Add two numbers together")]
-    Add(Args),
-    #[command(about = "Subtract two numbers")]
-    Subtract(Args),
-    #[command(about = "Multiply two numbers")]
-    Multiply(Args),
-    #[command(about = "Divide two numbers")]
-    Divide(Args),
+pub enum Subcommands {#[command(about = "List files in a directory")]
+    Files(DirArgs),
+    #[command(about = "List folders in a directory")]
+    Folders(DirArgs),
+    #[command(about = "List hidden files in a directory")]
+    HiddenFiles(DirArgs),
+    #[command(about = "List hidden folders in a directory")]
+    HiddenFolders(DirArgs),
 }
 
 #[derive(Parser, Debug)]
-pub struct Args {
-    #[arg(short = 'a', long = "left")]
-    pub number_a: f64,
-    #[arg(short = 'b', long = "right")]
-    pub number_b: f64,
+pub struct DirArgs {
+    #[arg(short = 'p', long = "path")]
+    pub path: Option<String>,
 }
