@@ -1,0 +1,60 @@
+import { Button, VerticalBox, HorizontalBox, LineEdit, ComboBox } from "std-widgets.slint";
+
+export component AppWindow inherits Window {
+    in-out property <string> result: "0";
+    in-out property <string> input-a: "";
+    in-out property <string> input-b: "";
+    in-out property <string> selected-op: "+";
+
+    callback calculate(string, string, string);
+
+    preferred-width: 400px;
+    preferred-height: 250px;
+    title: @tr("Rust GUI & CLI Template");
+    icon: @image-url("../resources/logo/rust-logo-512x512-4060026730.png");
+
+    VerticalBox {
+        padding: 16px;
+        spacing: 12px;
+
+        Text {
+            text: "Enter two numbers and pick an operation:";
+            font-size: 14px;
+        }
+
+        HorizontalBox {
+            spacing: 8px;
+
+            LineEdit {
+                placeholder-text: "Number A";
+                text <=> root.input-a;
+                horizontal-stretch: 1;
+            }
+
+            ComboBox {
+                model: ["+", "−", "×", "÷"];
+                current-value <=> root.selected-op;
+                width: 70px;
+            }
+
+            LineEdit {
+                placeholder-text: "Number B";
+                text <=> root.input-b;
+                horizontal-stretch: 1;
+            }
+        }
+
+        Button {
+            text: "Calculate";
+            clicked => {
+                root.calculate(root.input-a, root.input-b, root.selected-op);
+            }
+        }
+
+        Text {
+            text: "Result: \{root.result}";
+            font-size: 18px;
+            horizontal-alignment: center;
+        }
+    }
+}
