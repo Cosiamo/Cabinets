@@ -12,10 +12,15 @@ export component AppWindow inherits Window {
     preferred-height: 250px;
     title: @tr("Rust GUI & CLI Template");
     icon: @image-url("../resources/logo/rust-logo-512x512-4060026730.png");
+    background: transparent;
 
-    VerticalBox {
-        padding: 16px;
-        spacing: 12px;
+    Rectangle {
+        background: Colors.black.with-alpha(0.7);
+        border-radius: 0px;
+
+        VerticalBox {
+            padding: 16px;
+            spacing: 12px;
 
         Text {
             text: "Enter two numbers and pick an operation:";
@@ -56,5 +61,6 @@ export component AppWindow inherits Window {
             font-size: 18px;
             horizontal-alignment: center;
         }
+    }
     }
 }
