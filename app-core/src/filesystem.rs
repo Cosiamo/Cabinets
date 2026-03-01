@@ -62,10 +62,16 @@ pub fn list_hidden_folder_names(root: &Path) -> io::Result<Vec<String>> {
     Ok(folders)
 }
 
+/// Opens the file at `path` and returns a `File` handle.
+pub fn open_file<P: AsRef<Path>>(path: P) -> io::Result<fs::File> {
+    fs::File::open(path)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::fs::{self, File};
+    use std::io::Read;
     use tempfile::TempDir;
 
     fn setup_test_dir() -> TempDir {
@@ -123,5 +129,22 @@ mod tests {
     fn test_nonexistent_directory() {
         let result = list_folder_names(Path::new("/nonexistent/path"));
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_open_file() {
+        let dir = TempDir::new().unwrap();
+        let file_path = dir.path().join("sample.txt");
+
+        {
+            let mut f = File::create(&file_path).unwrap();
+            use std::io::Write;
+            write!(f, "hello").unwrap();
+        }
+
+        let mut f = open_file(&file_path).unwrap();
+        let mut contents = String::new();
+        f.read_to_string(&mut contents).unwrap();
+        assert_eq!(contents, "hello");
     }
 }
