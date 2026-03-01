@@ -17,6 +17,8 @@ pub enum Subcommands {
     HiddenFiles(DirArgs),
     #[command(about = "List hidden folders in a directory")]
     HiddenFolders(DirArgs),
+    #[command(about = "Open a file")]
+    OpenFile(DirArgs),
 }
 
 #[derive(Parser, Debug)]

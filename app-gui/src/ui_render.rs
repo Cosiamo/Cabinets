@@ -265,8 +265,8 @@ pub fn render_ui() -> Result<(), Box<dyn Error>> {
                 }
                 refresh_tree(&ui, &mut state);
             } else {
-                match filesystem::open_file(&clicked.path) {
-                    Ok(_) => ui.set_status_text(
+                match app_core::open_file(&clicked.path) {
+                    Ok(()) => ui.set_status_text(
                         format!("Opened file: {}", clicked.path.to_string_lossy()).into(),
                     ),
                     Err(e) => ui.set_status_text(

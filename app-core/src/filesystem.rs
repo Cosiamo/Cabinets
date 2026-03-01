@@ -1,6 +1,7 @@
 use std::fs;
 use std::io;
 use std::path::Path;
+use std::process::Command;
 
 /// Returns the names of non-hidden folders in the given directory.
 pub fn list_folder_names(root: &Path) -> io::Result<Vec<String>> {
@@ -62,8 +63,37 @@ pub fn list_hidden_folder_names(root: &Path) -> io::Result<Vec<String>> {
     Ok(folders)
 }
 
+/// Opens the file at `path` with the operating system default application.
+pub fn open_file<P: AsRef<Path>>(path: P) -> io::Result<()> {
+    let path = path.as_ref();
+
+    let mut command = if cfg!(target_os = "macos") {
+        let mut cmd = Command::new("open");
+        cmd.arg(path);
+        cmd
+    } else if cfg!(target_os = "windows") {
+        let mut cmd = Command::new("explorer");
+        cmd.arg(path);
+        cmd
+    } else {
+        let mut cmd = Command::new("xdg-open");
+        cmd.arg(path);
+        cmd
+    };
+
+    let status = command.status()?;
+    if status.success() {
+        Ok(())
+    } else {
+        Err(io::Error::other(format!(
+            "failed to open '{}' with default application (exit status: {status})",
+            path.display()
+        )))
+    }
+}
+
 /// Opens the file at `path` and returns a `File` handle.
-pub fn open_file<P: AsRef<Path>>(path: P) -> io::Result<fs::File> {
+pub fn open_file_handle<P: AsRef<Path>>(path: P) -> io::Result<fs::File> {
     fs::File::open(path)
 }
 
@@ -142,7 +172,7 @@ mod tests {
             write!(f, "hello").unwrap();
         }
 
-        let mut f = open_file(&file_path).unwrap();
+        let mut f = open_file_handle(&file_path).unwrap();
         let mut contents = String::new();
         f.read_to_string(&mut contents).unwrap();
         assert_eq!(contents, "hello");
