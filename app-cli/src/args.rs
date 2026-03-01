@@ -8,7 +8,8 @@ pub struct Commands {
 }
 
 #[derive(Subcommand, Debug)]
-pub enum Subcommands {#[command(about = "List files in a directory")]
+pub enum Subcommands {
+    #[command(about = "List files in a directory")]
     Files(DirArgs),
     #[command(about = "List folders in a directory")]
     Folders(DirArgs),
