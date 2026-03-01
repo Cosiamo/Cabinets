@@ -265,9 +265,14 @@ pub fn render_ui() -> Result<(), Box<dyn Error>> {
                 }
                 refresh_tree(&ui, &mut state);
             } else {
-                ui.set_status_text(
-                    format!("Selected file: {}", clicked.path.to_string_lossy()).into(),
-                );
+                match filesystem::open_file(&clicked.path) {
+                    Ok(_) => ui.set_status_text(
+                        format!("Opened file: {}", clicked.path.to_string_lossy()).into(),
+                    ),
+                    Err(e) => ui.set_status_text(
+                        format!("Failed to open {}: {}", clicked.path.to_string_lossy(), e).into(),
+                    ),
+                }
             }
         }
     });
